@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36127.28 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantar.TechnicalAssessment.WebApi", "Kantar.TechnicalAssessment.WebApi\Kantar.TechnicalAssessment.WebApi.csproj", "{111321D5-AEA2-4718-B224-180FA64EC8D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Api", "1. Api", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Application", "2. Application", "{EE75A9AE-30A0-4021-BFCA-C8FA78282FCE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Domain", "3. Domain", "{01BE5B58-6600-4B4C-AF35-BA79B1A73A6C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Infra", "4. Infra", "{936089EC-D4BB-4907-B3A9-9901B6269808}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. External Files", "0. External Files", "{55656FD7-F88B-4C2D-8816-5716BA4BFBF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantar.TechnicalAssessment.Domain", "Kantar.TechnicalAssessment.Domain\Kantar.TechnicalAssessment.Domain.csproj", "{292E026C-6EDB-4784-B360-F4BC49A7BDF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantar.TechnicalAssessment.ApplicationService", "Kantar.TechnicalAssessment.ApplicationService\Kantar.TechnicalAssessment.ApplicationService.csproj", "{9A6EB9BB-19B4-47AF-AFBC-1FE9596DCC20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantar.TechnicalAssessment.Infra.Data", "Kantar.TechnicalAssessment.Infra.Data\Kantar.TechnicalAssessment.Infra.Data.csproj", "{AB550C5E-1DB8-43C3-987E-EF0C06ECAD33}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F7D1FD17-55D5-4D3D-B814-1CEE0361B2C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantar.TechnicalAssessment.Tests", "Kantar.TechnicalAssessment.Tests\Kantar.TechnicalAssessment.Tests.csproj", "{98CD786F-C0CB-4B08-8E5F-7CFA087EC385}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantar.TechnicalAssessment.DomainServices", "Kantar.TechnicalAssessment.DomainServices\Kantar.TechnicalAssessment.DomainServices.csproj", "{78345791-6EE9-43E8-8ABE-DF551887683F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{111321D5-AEA2-4718-B224-180FA64EC8D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{111321D5-AEA2-4718-B224-180FA64EC8D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{111321D5-AEA2-4718-B224-180FA64EC8D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{111321D5-AEA2-4718-B224-180FA64EC8D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{292E026C-6EDB-4784-B360-F4BC49A7BDF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{292E026C-6EDB-4784-B360-F4BC49A7BDF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{292E026C-6EDB-4784-B360-F4BC49A7BDF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{292E026C-6EDB-4784-B360-F4BC49A7BDF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A6EB9BB-19B4-47AF-AFBC-1FE9596DCC20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A6EB9BB-19B4-47AF-AFBC-1FE9596DCC20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A6EB9BB-19B4-47AF-AFBC-1FE9596DCC20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A6EB9BB-19B4-47AF-AFBC-1FE9596DCC20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB550C5E-1DB8-43C3-987E-EF0C06ECAD33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB550C5E-1DB8-43C3-987E-EF0C06ECAD33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB550C5E-1DB8-43C3-987E-EF0C06ECAD33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB550C5E-1DB8-43C3-987E-EF0C06ECAD33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98CD786F-C0CB-4B08-8E5F-7CFA087EC385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98CD786F-C0CB-4B08-8E5F-7CFA087EC385}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98CD786F-C0CB-4B08-8E5F-7CFA087EC385}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98CD786F-C0CB-4B08-8E5F-7CFA087EC385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78345791-6EE9-43E8-8ABE-DF551887683F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78345791-6EE9-43E8-8ABE-DF551887683F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78345791-6EE9-43E8-8ABE-DF551887683F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78345791-6EE9-43E8-8ABE-DF551887683F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{111321D5-AEA2-4718-B224-180FA64EC8D4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{292E026C-6EDB-4784-B360-F4BC49A7BDF7} = {01BE5B58-6600-4B4C-AF35-BA79B1A73A6C}
+		{9A6EB9BB-19B4-47AF-AFBC-1FE9596DCC20} = {EE75A9AE-30A0-4021-BFCA-C8FA78282FCE}
+		{AB550C5E-1DB8-43C3-987E-EF0C06ECAD33} = {936089EC-D4BB-4907-B3A9-9901B6269808}
+		{98CD786F-C0CB-4B08-8E5F-7CFA087EC385} = {F7D1FD17-55D5-4D3D-B814-1CEE0361B2C9}
+		{78345791-6EE9-43E8-8ABE-DF551887683F} = {EE75A9AE-30A0-4021-BFCA-C8FA78282FCE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9FF9DF5F-432A-4BDD-BE1E-37C22C6436BF}
+	EndGlobalSection
+EndGlobal
