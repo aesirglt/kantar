@@ -1,0 +1,6 @@
+@Kantar.TechnicalAssessment.WebApi_HostAddress = http://localhost:5124
+
+GET {{Kantar.TechnicalAssessment.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
