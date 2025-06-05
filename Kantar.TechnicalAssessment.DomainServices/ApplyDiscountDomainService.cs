@@ -1,40 +1,50 @@
 ﻿using Kantar.TechnicalAssessment.Domain.Enums;
 using Kantar.TechnicalAssessment.Domain.Features;
 using Kantar.TechnicalAssessment.Domain.Interfaces.DomainServices;
-using Microsoft.FSharp.Core;
 
 namespace Kantar.TechnicalAssessment.DomainServices
 {
     public class ApplyDiscountDomainService : IApplyDiscountDomainService
     {
-        public FSharpOption<Basket> ApplyDiscountsToBasket(Basket basket, List<Discount> discounts)
+        public IEnumerable<BasketItem> ApplyDiscounts(
+            IEnumerable<BasketItem> basketItems,
+            List<Discount> discounts)
         {
-            if (basket == null || discounts is not { } or { Count: 0 })
-                return FSharpOption<Basket>.None;
+            if (discounts is null or { Count: 0 })
+                return basketItems ?? [];
 
-            return basket with
-            {
-                Discounts = GetDiscount(basket, discounts)
-            };
+            return BasketItemsWithDiscounts(basketItems ?? [], discounts);
         }
 
-        private static decimal GetDiscount(Basket basket, List<Discount> discounts)
-            => basket.BasketItems
-                .SelectMany(basketItem =>
-                    discounts
+        private static IEnumerable<BasketItem> BasketItemsWithDiscounts(
+            IEnumerable<BasketItem> basketItems,
+            List<Discount> discounts)
+            => basketItems
+                .SelectMany(basketItem => discounts
                     .Where(d => d.ItemId == basketItem.ItemId)
-                    .Select(discount =>
+                    .Select(discount => basketItem with
                     {
-                        var unitPrice = basketItem.Item.Price;
-                        var totalPrice = unitPrice * basketItem.Quantity;
-
-                        return discount.DiscountType switch
+                        Discounts = discount.DiscountType switch
                         {
-                            DiscountType.Percentage => unitPrice * (discount.Amount / 100m) * basketItem.Quantity,
-                            DiscountType.Fixed => discount.Amount * basketItem.Quantity,
+                            DiscountType.Percentage => basketItem.UnitPrice * (discount.Value / 100m) * basketItem.Quantity,
+                            DiscountType.Fixed => discount.Value * basketItem.Quantity,
+                            DiscountType.ConditionalDivision => ConditionalDisivion(basketItems, basketItem, discount),
                             _ => 0m
-                        };
-                    }))
-                    .Sum();
+                        },
+                    }));
+
+        private static decimal ConditionalDisivion(IEnumerable<BasketItem> basketItems, BasketItem basketItem, Discount discount)
+        {
+            long targetQuantity =
+                basketItems
+                .FirstOrDefault(x => x.ItemId == discount.ItemConditionalId)?.Quantity ?? 0;
+
+            if (targetQuantity == 0)
+                return 0;
+
+            decimal applicableDiscounts = targetQuantity / discount.ConditionalQuantity;
+
+            return (basketItem.UnitPrice / discount.Value) * Math.Min(basketItem.Quantity, applicableDiscounts);
+        }
     }
 }
