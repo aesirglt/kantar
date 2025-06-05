@@ -12,14 +12,14 @@ namespace Kantar.TechnicalAssessment.Infra.Data.Repositories
         private readonly DbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         private readonly ILogger<BaseRepository<TEntity>> _logger = logger;
 
-        public FSharpResult<TEntity, DomainError> Add(TEntity entity)
+        public async Task<FSharpResult<TEntity, DomainError>> Add(TEntity entity, CancellationToken cancellationToken)
         {
             try
             {
                 var existingEntity = _dbContext.Set<TEntity>().Find(entity.Id);
 
-                _dbContext.Set<TEntity>().Add(entity);
-                _dbContext.SaveChanges();
+                await _dbContext.Set<TEntity>().AddAsync(entity, cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return FSharpResult<TEntity, DomainError>.NewOk(entity);
             }
@@ -30,22 +30,53 @@ namespace Kantar.TechnicalAssessment.Infra.Data.Repositories
             }
         }
 
-        public FSharpResult<Unit, DomainError> Delete(TEntity entity)
+        public async Task<FSharpResult<Unit, DomainError>> Add(List<TEntity> entities, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _dbContext.Set<TEntity>().AddRangeAsync(entities, cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                return FSharpResult<Unit, DomainError>.NewOk(default!);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, message: "An error occurred while adding the {TypeName}: {Message}", typeof(TEntity).Name, ex.Message);
+                return FSharpResult<Unit, DomainError>.NewError(new InternalError());
+            }
+        }
+
+        public Task<FSharpResult<Unit, DomainError>> Delete(TEntity entity)
         {
             throw new NotImplementedException();
         }
 
-        public FSharpResult<IEnumerable<TEntity>, DomainError> GetAll()
+        public Task<FSharpResult<Unit, DomainError>> Delete(TEntity entity, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public FSharpResult<TEntity, DomainError> GetById(int id)
+        public Task<FSharpResult<IEnumerable<TEntity>, DomainError>> GetAll(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public FSharpResult<Unit, DomainError> Update(TEntity entity)
+        public Task<FSharpResult<TEntity, DomainError>> GetById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FSharpResult<TEntity, DomainError>> GetById(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FSharpResult<Unit, DomainError>> Update(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FSharpResult<Unit, DomainError>> Update(TEntity entity, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

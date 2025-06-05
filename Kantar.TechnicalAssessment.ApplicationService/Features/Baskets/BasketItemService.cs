@@ -1,0 +1,29 @@
+﻿using Kantar.TechnicalAssessment.Domain;
+using Kantar.TechnicalAssessment.Domain.Errors;
+using Kantar.TechnicalAssessment.Domain.Features;
+using Kantar.TechnicalAssessment.Domain.Interfaces.Repositories;
+using Kantar.TechnicalAssessment.Domain.Interfaces.Services;
+using Microsoft.FSharp.Core;
+
+using static Microsoft.FSharp.Core.FSharpResult<Microsoft.FSharp.Core.Unit,
+    Kantar.TechnicalAssessment.Domain.DomainError>;
+namespace Kantar.TechnicalAssessment.ApplicationService.Features.Baskets
+{
+    public class BasketItemService : IBasketItemService
+    {
+        private readonly IBaseRepository<BasketItem> _basketItemRepository;
+
+        public BasketItemService(IBaseRepository<BasketItem> basketItemRepository)
+        {
+            _basketItemRepository = basketItemRepository ?? throw new ArgumentNullException(nameof(basketItemRepository));
+        }
+
+        public async Task<FSharpResult<Unit, DomainError>> CreateAsync(List<BasketItem> basketItems, CancellationToken cancellationToken)
+        {
+            if (basketItems is null or { Count: 0 })
+                return NewError(new InvalidObjectError("Basket cant be null."));
+
+            return await _basketItemRepository.Add(basketItems!, cancellationToken);
+        }
+    }
+}

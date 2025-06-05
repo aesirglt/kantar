@@ -16,8 +16,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kantar.TechnicalAssessment.ApplicationService\Kantar.TechnicalAssessment.ApplicationService.csproj" />
+    <ProjectReference Include="..\Kantar.TechnicalAssessment.DomainServices\Kantar.TechnicalAssessment.DomainServices.csproj" />
     <ProjectReference Include="..\Kantar.TechnicalAssessment.Domain\Kantar.TechnicalAssessment.Domain.csproj" />
     <ProjectReference Include="..\Kantar.TechnicalAssessment.Infra.Data\Kantar.TechnicalAssessment.Infra.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 
 </Project>

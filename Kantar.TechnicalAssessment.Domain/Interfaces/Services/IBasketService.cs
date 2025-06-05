@@ -1,14 +1,11 @@
 ﻿using Kantar.TechnicalAssessment.Domain.Features;
+using Microsoft.FSharp.Core;
 
 namespace Kantar.TechnicalAssessment.Domain.Interfaces.Services
 {
     public interface IBasketService
     {
-        Task<Basket?> GetBasketAsync(Guid id);
-        Task<Basket> CreateBasketAsync(Basket basket);
-        Task<Basket> UpdateBasketAsync(Basket basket);
-        Task<bool> DeleteBasketAsync(Guid id);
-        Task<Basket> AddItemToBasketAsync(Guid basketId, BasketItem item);
-        Task<Basket> RemoveItemFromBasketAsync(Guid basketId, Guid itemId);
+        Task<FSharpResult<Basket, DomainError>> CreateAsync(Basket basket, CancellationToken cancellationToken);
+        Task<FSharpResult<Basket, DomainError>> GetAsync(Guid basketId, CancellationToken cancellationToken);
     }
 }

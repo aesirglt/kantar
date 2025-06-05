@@ -3,6 +3,7 @@
     public enum DiscountType
     {
         Percentage,
-        Fixed
+        Fixed,
+        ConditionalDivision
     }
 }
