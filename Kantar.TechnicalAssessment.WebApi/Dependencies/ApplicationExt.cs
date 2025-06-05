@@ -1,4 +1,6 @@
 ﻿using Kantar.TechnicalAssessment.ApplicationService.Features.Baskets;
+using Kantar.TechnicalAssessment.ApplicationService.Features.Discounts;
+using Kantar.TechnicalAssessment.ApplicationService.Features.Items;
 using Kantar.TechnicalAssessment.ApplicationService.Features.Managements;
 using Kantar.TechnicalAssessment.ApplicationService.Interfaces;
 using Kantar.TechnicalAssessment.Domain.Features;
@@ -18,12 +20,14 @@ namespace Kantar.TechnicalAssessment.WebApi.Dependencies
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
             => services.AddScoped<IBasketService, BasketService>()
             .AddScoped<IBasketItemService, BasketItemService>()
-            .AddScoped<IBasketManagmentService, BasketManagmentService>();
+            .AddScoped<IBasketManagmentService, BasketManagmentService>()
+            .AddScoped<IDiscountService, DiscountService>()
+            .AddScoped<IItemService, ItemService>();
 
         public static IServiceCollection AddInfraData(this IServiceCollection services)
-            => services.AddSingleton<IBaseRepository<Basket>, BaseRepository<Basket>>()
-            .AddSingleton<IBaseRepository<BasketItem>, BaseRepository<BasketItem>>()
-            .AddSingleton<IBaseRepository<Discount>, BaseRepository<Discount>>()
-            .AddSingleton<IBaseRepository<Item>, BaseRepository<Item>>();
+            => services.AddScoped<IBaseRepository<Basket>, BaseRepository<Basket>>()
+            .AddScoped<IBaseRepository<BasketItem>, BaseRepository<BasketItem>>()
+            .AddScoped<IBaseRepository<Discount>, BaseRepository<Discount>>()
+            .AddScoped<IBaseRepository<Item>, BaseRepository<Item>>();
     }
 }

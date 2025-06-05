@@ -1,7 +1,10 @@
 ﻿namespace Kantar.TechnicalAssessment.Domain.Errors
 {
-    public record InternalError(string Msg = "Internal server error") : DomainError(Msg)
+    public record InternalError : DomainError
     {
         public override int ErrorCode => 500;
+        public InternalError(string msg = "Internal server error") : base(msg)
+        {
+        }
     }
 }

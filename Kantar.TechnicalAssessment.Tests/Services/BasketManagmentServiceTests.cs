@@ -24,7 +24,7 @@ namespace Kantar.TechnicalAssessment.Tests.Services
         private Mock<IItemService> _itemServiceMoc;
         private Mock<IDiscountService> _discountServiceMock;
         private Mock<IApplyDiscountDomainService> _applyDiscountDomainService;
-        
+
         [SetUp]
         public void Setup()
         {
@@ -111,7 +111,84 @@ namespace Kantar.TechnicalAssessment.Tests.Services
             _discountServiceMock.VerifyNoOtherCalls();
             _basketItemServiceMock.Verify(x => x.CreateAsync(basked.BasketItems, cancellationToken));
             _basketItemServiceMock.VerifyNoOtherCalls();
-            _applyDiscountDomainService.Verify(x => x.ApplyDiscounts(basked.BasketItems, It.IsAny<List<Discount>>()));
+            _applyDiscountDomainService.Verify(x => x.ApplyDiscounts(It.IsAny<List<BasketItem>>(), It.IsAny<List<Discount>>()));
+            _applyDiscountDomainService.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public async Task AddAsync_ShouldReturnOk_WhenBasketAlreadyHaveTheItem()
+        {
+            // Arrange
+            var cancellationToken = CancellationToken.None;
+            var itemId = BasicValue.AppleId;
+            const string itemName = "Apple";
+            var command = new CreateBasketCommand
+            {
+                BasketId = Guid.NewGuid(),
+                Items =
+                [
+                    new() { ItemId = itemId, Quantity = 10 }
+                ]
+            };
+
+            var basked = new Basket
+            {
+                Id = command.BasketId,
+                CreatedAt = DateTime.UtcNow,
+                BasketItems = [ new() {
+                    ItemId = itemId,
+                    Quantity = 10,
+                    UnitPrice = 0.30m,
+                    BasketId = command.BasketId,
+                }],
+            };
+
+            _basketServiceMock.Setup(x => x.GetAsync(command.BasketId, cancellationToken))
+                .ReturnsAsync(FSharpResult<Basket, DomainError>.NewOk(basked));
+
+            _basketItemServiceMock.Setup(x => x.CreateAsync(It.IsAny<List<BasketItem>>(), cancellationToken))
+                .ReturnsAsync(FSharpResult<Unit, DomainError>.NewOk(default!));
+
+            _itemServiceMoc.Setup(Setup => Setup.GetAllAsync(It.IsAny<List<Guid>>(), cancellationToken))
+                .ReturnsAsync(FSharpResult<IQueryable<Item>, DomainError>.NewOk(new List<Item>
+                {
+                    new ()
+                    {
+                        Id = itemId,
+                        Name = itemName,
+                        Price = 0.30m
+                    }
+                }.AsQueryable()));
+
+            List<Discount> discounts = [
+                new ()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "10% off Apple",
+                    ItemId = itemId,
+                    DiscountType = DiscountType.Percentage,
+                    Value = 0.10m,
+                    CreatedAt = DateTime.UtcNow
+                }
+            ];
+            List<Guid> itemIds = [itemId];
+
+            _discountServiceMock.Setup(x => x.GetByItemIdsAsync(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(FSharpResult<IQueryable<Discount>, DomainError>.NewOk(discounts.AsQueryable()));
+
+            _applyDiscountDomainService.Setup(x => x.ApplyDiscounts(basked.BasketItems, It.IsAny<List<Discount>>()))
+                .Returns((IEnumerable<BasketItem> basketItems, List<Discount> discounts) => basketItems);
+
+            _basketItemServiceMock.Setup(x => x.CreateAsync(basked.BasketItems, cancellationToken))
+                .ReturnsAsync(FSharpResult<Unit, DomainError>.NewOk(default!));
+
+            // Act
+            var result = await _basketManagmentService.AddAsync(command, CancellationToken.None);
+
+            // Assert
+            result.IsOk.Should().BeTrue();
+            _discountServiceMock.VerifyNoOtherCalls();
+            _basketItemServiceMock.VerifyNoOtherCalls();
             _applyDiscountDomainService.VerifyNoOtherCalls();
         }
         [Test]
@@ -140,7 +217,7 @@ namespace Kantar.TechnicalAssessment.Tests.Services
             var result = await _basketManagmentService.AddAsync(command, CancellationToken.None);
 
             result.IsError.Should().BeTrue();
-            result.ErrorValue.Should().BeOfType<DomainError>();
+            result.ErrorValue.Should().BeOfType<InternalError>();
         }
         [Test]
         public async Task AddAsync_ShouldReturnError_WhenCreatingNewBasketFails()
@@ -169,7 +246,7 @@ namespace Kantar.TechnicalAssessment.Tests.Services
             var result = await _basketManagmentService.AddAsync(command, CancellationToken.None);
 
             result.IsError.Should().BeTrue();
-            result.ErrorValue.Should().BeOfType<DomainError>();
+            result.ErrorValue.Should().BeOfType<InternalError>();
         }
 
         [Test]
@@ -209,7 +286,7 @@ namespace Kantar.TechnicalAssessment.Tests.Services
             var result = await _basketManagmentService.AddAsync(command, CancellationToken.None);
 
             result.IsError.Should().BeTrue();
-            result.ErrorValue.Should().BeOfType<DomainError>();
+            result.ErrorValue.Should().BeOfType<NotFoundError>();
         }
     }
 }

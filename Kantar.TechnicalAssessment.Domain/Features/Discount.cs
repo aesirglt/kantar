@@ -9,7 +9,7 @@ namespace Kantar.TechnicalAssessment.Domain.Features
         public DiscountType DiscountType { get; set; }
         public decimal Value { get; set; }
         public Guid ItemId { get; set; }
-        public Item Item { get; set; } = null!;
+        public virtual Item Item { get; set; } = null!;
         public DateTime Until { get; set; }
         public Guid? ItemConditionalId { get; set; }
         public long ConditionalQuantity { get; set; }

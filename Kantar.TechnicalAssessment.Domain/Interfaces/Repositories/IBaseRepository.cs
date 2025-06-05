@@ -9,6 +9,6 @@ namespace Kantar.TechnicalAssessment.Domain.Interfaces.Repositories
         Task<FSharpResult<Unit, DomainError>> Update(TEntity entity, CancellationToken cancellationToken);
         Task<FSharpResult<Unit, DomainError>> Delete(TEntity entity, CancellationToken cancellationToken);
         Task<FSharpResult<TEntity, DomainError>> GetById(Guid id, CancellationToken cancellationToken);
-        Task<FSharpResult<IEnumerable<TEntity>, DomainError>> GetAll(CancellationToken cancellationToken);
+        Task<FSharpResult<IQueryable<TEntity>, DomainError>> GetAll(CancellationToken cancellationToken);
     }
 }

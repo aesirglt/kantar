@@ -10,7 +10,7 @@
         public decimal SubTotal => UnitPrice * Quantity;
         public decimal Total => SubTotal - Discounts;
 
-        public Item Item { get; set; } = null!;
-        public Basket Basket { get; set; } = null!;
+        public virtual Item Item { get; set; } = null!;
+        public virtual Basket Basket { get; set; } = null!;
     }
 }
