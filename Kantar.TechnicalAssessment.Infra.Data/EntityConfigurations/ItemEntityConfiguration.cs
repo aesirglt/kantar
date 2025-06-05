@@ -26,10 +26,10 @@ namespace Kantar.TechnicalAssessment.Infra.Data.EntityConfigurations
                 new () { Id = BasicValue.AppleId, Price = 0.30m,  CreatedAt = DateTime.UtcNow, Name = "Apples"  },
                 new () { Id = BasicValue.SoupId, Price = 1.99m,  CreatedAt = DateTime.UtcNow, Name = "Soup"   },
                 new () { Id = BasicValue.BreadId, Price = 1.20m,  CreatedAt = DateTime.UtcNow, Name = "Bread"   },
-                new () { Id = Guid.NewGuid(), Price = 0.80m,  CreatedAt = DateTime.UtcNow, Name = "Milk"    },
-                new () { Id = Guid.NewGuid(), Price = 0.40m,  CreatedAt = DateTime.UtcNow, Name = "Pears"   },
-                new () { Id = Guid.NewGuid(), Price = 1.00m,  CreatedAt = DateTime.UtcNow, Name = "Eggplant"},
-                new () { Id = Guid.NewGuid(), Price = 1.20m,  CreatedAt = DateTime.UtcNow, Name = "Cucumber"},
+                new () { Id = BasicValue.Milk, Price = 0.80m,  CreatedAt = DateTime.UtcNow, Name = "Milk"    },
+                new () { Id = BasicValue.Pears, Price = 0.40m,  CreatedAt = DateTime.UtcNow, Name = "Pears"   },
+                new () { Id = BasicValue.Eggplant, Price = 1.00m,  CreatedAt = DateTime.UtcNow, Name = "Eggplant"},
+                new () { Id = BasicValue.Cucumber, Price = 1.20m,  CreatedAt = DateTime.UtcNow, Name = "Cucumber"},
             ];
 
             builder.HasData(items);

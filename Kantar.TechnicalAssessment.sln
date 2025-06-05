@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36127.28 d17.14
+VisualStudioVersion = 17.14.36127.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantar.TechnicalAssessment.WebApi", "Kantar.TechnicalAssessment.WebApi\Kantar.TechnicalAssessment.WebApi.csproj", "{111321D5-AEA2-4718-B224-180FA64EC8D4}"
 EndProject
@@ -14,6 +14,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Infra", "4. Infra", "{936089EC-D4BB-4907-B3A9-9901B6269808}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. External Files", "0. External Files", "{55656FD7-F88B-4C2D-8816-5716BA4BFBF6}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantar.TechnicalAssessment.Domain", "Kantar.TechnicalAssessment.Domain\Kantar.TechnicalAssessment.Domain.csproj", "{292E026C-6EDB-4784-B360-F4BC49A7BDF7}"
 EndProject
