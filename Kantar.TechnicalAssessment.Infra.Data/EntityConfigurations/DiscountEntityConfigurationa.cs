@@ -6,14 +6,19 @@ namespace Kantar.TechnicalAssessment.Infra.Data.EntityConfigurations
 {
     public class DiscountEntityConfigurationa : IEntityTypeConfiguration<Discount>
     {
-        const string TABLE_NAME = "Discounts";
-
         public void Configure(EntityTypeBuilder<Discount> builder)
         {
             builder.HasKey(e => e.Id);
             builder.Property(e => e.Id).ValueGeneratedOnAdd();
             builder.Property(e => e.CreatedAt).IsRequired();
-            
+            builder.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            builder.Property(e => e.Description).HasMaxLength(500);
+            builder.Property(e => e.Value).IsRequired().HasPrecision(18, 2);
+            builder.Property(e => e.DiscountType).IsRequired();
+            builder.Property(e => e.ItemId).IsRequired();
+            builder.Property(e => e.Until).IsRequired();
+            builder.Property(e => e.ItemConditionalId).IsRequired(false);
+
             List<Discount> discounts = [
                 new ()
                 {
@@ -23,7 +28,7 @@ namespace Kantar.TechnicalAssessment.Infra.Data.EntityConfigurations
                     Until = DateTime.UtcNow.AddDays(7),
                     Name = "Apple week discount",
                     Description = "Get 10% off on apples for one week.",
-                    Value = 10.0m,
+                    Value = 10m,
                     DiscountType = Domain.Enums.DiscountType.Percentage,
                 },
                 new ()

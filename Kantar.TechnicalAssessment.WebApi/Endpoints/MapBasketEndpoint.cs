@@ -10,16 +10,16 @@ namespace Kantar.TechnicalAssessment.WebApi.Endpoints
     {
         public static WebApplication MapBasketEndpoints(this WebApplication app)
         {
-            var grouped = app.MapGroup("/api/baskets")
-                .WithName("Baskets")
-                .WithOpenApi();
+            var grouped = app.MapGroup("/api/baskets");
 
             grouped.MapGet("/{id:guid}",
-                async (Guid id, [FromServices] IBasketService basketService, CancellationToken cancellationToken) =>
+                async (Guid id, [FromServices] IBasketManagmentService basketManagment, CancellationToken cancellationToken) =>
                 {
-                    var basket = await basketService.GetAsync(id, cancellationToken);
-                    return basket.IsOk ? Results.Ok(basket) : Results.NotFound();
-                });
+                    var basket = await basketManagment.GetById(new() { BasketId = id }, cancellationToken);
+                    return basket.IsOk ? Results.Ok(basket.ResultValue) : Results.NotFound(basket.ErrorValue);
+                })
+            .WithName("GetBaskets")
+            .WithOpenApi();
 
             grouped.MapPost("/{id:guid}/items",
                 async (Guid id,
@@ -28,8 +28,10 @@ namespace Kantar.TechnicalAssessment.WebApi.Endpoints
                 CancellationToken cancellationToken) =>
                 {
                     var basket = await basketManagment.AddAsync(createBasketDto.ToCommand(id), cancellationToken);
-                    return basket.IsOk ? Results.Ok(basket) : Results.NotFound();
-                });
+                    return basket.IsOk ? Results.Ok(basket.ResultValue) : Results.NotFound(basket.ErrorValue);
+                })
+            .WithName("PostBasketItems")
+            .WithOpenApi();
 
             return app;
         }
