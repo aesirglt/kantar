@@ -34,14 +34,15 @@ namespace Kantar.TechnicalAssessment.Infra.Data.EntityConfigurations
                 new ()
                 {
                     Id = Guid.NewGuid(),
-                    ItemId = BasicValue.SoupId,
+                    ItemId = BasicValue.BreadId,
                     CreatedAt = DateTime.UtcNow,
                     Until = DateTime.UtcNow.AddDays(30),
                     Name = "Bread discount",
                     Description = "Buy 2 tins of soup and get a loaf of bread for half price.",
                     Value = 2m,
                     DiscountType = Domain.Enums.DiscountType.ConditionalDivision,
-                    ItemConditionalId = BasicValue.BreadId,
+                    ItemConditionalId = BasicValue.SoupId,
+                    ConditionalQuantity = 2
                 },
             ];
 

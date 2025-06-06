@@ -55,6 +55,8 @@ namespace Kantar.TechnicalAssessment.Infra.Data.Repositories
                 entityEntry.State = EntityState.Deleted;
 
                 await _dbContext.SaveChangesAsync(cancellationToken);
+                entityEntry.State = EntityState.Detached;
+
                 return FSharpResult<Unit, DomainError>.NewOk(default!);
             }
             catch
@@ -92,9 +94,22 @@ namespace Kantar.TechnicalAssessment.Infra.Data.Repositories
             }
         }
 
-        public Task<FSharpResult<Unit, DomainError>> Update(TEntity entity, CancellationToken cancellationToken)
+        public async Task<FSharpResult<Unit, DomainError>> Update(TEntity entity, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var entityEntry = _dbContext.Set<TEntity>().Entry(entity);
+                entityEntry.State = EntityState.Modified;
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
+                entityEntry.State = EntityState.Detached;
+
+                return FSharpResult<Unit, DomainError>.NewOk(default!);
+            }
+            catch
+            {
+                return FSharpResult<Unit, DomainError>.NewError(new InternalError("An error occurred while update entity."));
+            }
         }
     }
 }

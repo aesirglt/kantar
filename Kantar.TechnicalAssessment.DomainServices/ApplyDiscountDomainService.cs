@@ -20,9 +20,13 @@ namespace Kantar.TechnicalAssessment.DomainServices
             IEnumerable<BasketItem> basketItems,
             List<Discount> discounts)
             => basketItems
-                .SelectMany(basketItem => discounts
-                    .Where(d => d.ItemId == basketItem.ItemId)
-                    .Select(discount => basketItem with
+                .SelectMany(basketItem =>
+                {
+                    var discountForApply = discounts.Where(d => d.ItemId == basketItem.ItemId).ToList();
+
+                    if (discountForApply is { Count: 0 }) return [basketItem];
+
+                    return discountForApply.Select(discount => basketItem with
                     {
                         Discounts = discount.DiscountType switch
                         {
@@ -31,7 +35,8 @@ namespace Kantar.TechnicalAssessment.DomainServices
                             DiscountType.ConditionalDivision => ConditionalDisivion(basketItems, basketItem, discount),
                             _ => 0m
                         },
-                    }));
+                    });
+                });
 
         private static decimal ConditionalDisivion(IEnumerable<BasketItem> basketItems, BasketItem basketItem, Discount discount)
         {

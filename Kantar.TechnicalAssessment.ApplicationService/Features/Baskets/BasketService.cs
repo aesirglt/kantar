@@ -22,10 +22,18 @@ namespace Kantar.TechnicalAssessment.ApplicationService.Features.Baskets
             => basket == null
                 ? NewError(new InvalidObjectError("Basket cant be null."))
                 : await _basketRepository.Add(basket, cancellationToken);
-        
+
+        public Task<FSharpResult<IQueryable<Basket>, DomainError>> GetAllAsync(CancellationToken cancellationToken)
+            => _basketRepository.GetAll(cancellationToken);
+
         public async Task<FSharpResult<Basket, DomainError>> GetAsync(Guid basketId, CancellationToken cancellationToken)
             => basketId == Guid.Empty
             ? NewError(new InvalidObjectError("BasketId cant be default value."))
             : await _basketRepository.GetById(basketId, cancellationToken);
+
+        public async Task<FSharpResult<Unit, DomainError>> RemoveAsync(Basket basket, CancellationToken cancellationToken)
+         => basket == null
+                ? FSharpResult<Unit, DomainError>.NewError(new InvalidObjectError("Basket cant be null."))
+                : await _basketRepository.Delete(basket, cancellationToken);
     }
 }

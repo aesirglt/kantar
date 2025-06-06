@@ -15,6 +15,22 @@ Additionally, I have published a NuGet package that I use professionally to faci
 
 Kantar.TechnicalAssessment is a simple basket shopping API built with C# minimal api. It allows basic operations for Baskets.
 
+## 📝 API Usage Instructions
+### ➕ Create an Basket
+- **Explanation:** 
+- This endpoint allows you to create a new basket item for a user. When a basket doesnt exists, will create.
+- **Endpoint:** `POST /baskets/{id}/items`
+- **Body:**
+  ```json
+{
+  "items": [
+    {
+      "itemId": "d1f8b2c4-3e5a-4f0b-9c6e-7f8b2c4f0b9c",
+      "quantity": 0
+    }
+  ]
+}
+  ```
 ## 🚀 Getting Started
 
 To run the project:

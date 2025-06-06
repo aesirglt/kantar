@@ -7,7 +7,7 @@
         public class CreateBasketItemDto
         {
             public Guid ItemId { get; set; }
-            public long Quantity { get; set; }
+            public ulong Quantity { get; set; }
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Kantar.TechnicalAssessment.WebApi.Mappers
             Items = [.. createBasketDto.Items.Select(item => new CreateBasketCommand.BasketItemCmd
             {
                 ItemId = item.ItemId,
-                Quantity = item.Quantity
+                Quantity = (long)item.Quantity
             })]
         };
     }

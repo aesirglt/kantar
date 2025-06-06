@@ -25,5 +25,32 @@ namespace Kantar.TechnicalAssessment.ApplicationService.Features.Baskets
 
             return await _basketItemRepository.Add(basketItems!, cancellationToken);
         }
+
+        public async Task<FSharpResult<Unit, DomainError>> RemoveAsync(Guid basketItemId, CancellationToken cancellationToken)
+        {
+            var basket = await _basketItemRepository.GetById(basketItemId, cancellationToken);
+
+            if(basket.IsError)
+                return NewError(basket.ErrorValue);
+
+            return await _basketItemRepository.Delete(basket.ResultValue, cancellationToken);
+        }
+
+        public async Task<FSharpResult<Unit, DomainError>> UpdateAsync(List<BasketItem> basketItems, CancellationToken cancellationToken)
+        {
+            if (basketItems is null or { Count: 0 })
+                return NewError(new InvalidObjectError("Basket cant be null."));
+
+            foreach (var item in basketItems)
+            {
+                if (item.Quantity <= 0)
+                    return NewError(new InvalidObjectError("BasketItem quantity must be greater than zero."));
+
+                await _basketItemRepository.Update(item!, cancellationToken);
+            }
+
+
+            return NewOk(default!);
+        }
     }
 }
