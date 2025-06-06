@@ -54,6 +54,40 @@ namespace Kantar.TechnicalAssessment.ApplicationService.Features.Managements
                 : await CreateBasketItems(command, basketResult.ResultValue, maybeItems, cancellationToken);
         }
 
+        private async Task<BasketResult> CreateBasketItems(CreateBasketCommand command, Basket basket,
+            FSharpResult<IQueryable<Item>, DomainError> maybeItems, CancellationToken cancellationToken)
+        {
+            var basketItems =
+                maybeItems.ResultValue.ToList().Select(item => new BasketItem
+                {
+                    BasketId = basket.Id,
+                    ItemId = item.Id,
+                    UnitPrice = item.Price,
+                    Quantity = command.Items.First(x => x.ItemId == item.Id).Quantity,
+                    CreatedAt = DateTime.UtcNow
+                }).Where(x => !basket.BasketItems.Exists(c => c.ItemId == x.ItemId)).ToList();
+
+            if (basketItems is { Count: 0 }) return BasketResult.NewOk(default!);
+
+            await _basketItemService.CreateAsync([.. basketItems], cancellationToken);
+
+            var basketItemsUpdated = (await _basketService.GetAsync(basket.Id, cancellationToken))
+                .ResultValue.BasketItems;
+
+            var discountResult = await _discountService.GetByItemIdsAsync([.. basketItemsUpdated.Select(x => x.ItemId)], cancellationToken);
+
+            List<Discount> discounts = [];
+
+            if (discountResult.IsOk)
+            {
+                discounts = [.. discountResult.ResultValue];
+            }
+
+            var basketWithDiscounts = _applyDiscountDomainService.ApplyDiscounts(basketItemsUpdated, discounts).ToList();
+
+            return await _basketItemService.UpdateAsync(basketWithDiscounts, cancellationToken);
+        }
+
         public async Task<FSharpResult<IQueryable<BasketResumeViewModel>, DomainError>> GetAll(GetAllBasketQuery query, CancellationToken cancellationToken)
         {
             var allQuery = await _basketService.GetAllAsync(cancellationToken);
@@ -201,35 +235,6 @@ namespace Kantar.TechnicalAssessment.ApplicationService.Features.Managements
             var basketWithDiscounts = _applyDiscountDomainService.ApplyDiscounts(basketItems, discounts).ToList();
 
             return await _basketItemService.UpdateAsync(basketItems, cancellationToken);
-        }
-
-        private async Task<BasketResult> CreateBasketItems(CreateBasketCommand command, Basket basket,
-            FSharpResult<IQueryable<Item>, DomainError> maybeItems, CancellationToken cancellationToken)
-        {
-            var basketItems =
-                maybeItems.ResultValue.ToList().Select(item => new BasketItem
-                {
-                    BasketId = basket.Id,
-                    ItemId = item.Id,
-                    UnitPrice = item.Price,
-                    Quantity = command.Items.First(x => x.ItemId == item.Id).Quantity,
-                    CreatedAt = DateTime.UtcNow
-                }).Where(x => !basket.BasketItems.Exists(c => c.ItemId == x.ItemId)).ToList();
-
-            if (basketItems is { Count: 0 }) return BasketResult.NewOk(default!);
-
-            var discountResult = await _discountService.GetByItemIdsAsync([.. basketItems.Select(x => x.ItemId)], cancellationToken);
-
-            List<Discount> discounts = [];
-
-            if (discountResult.IsOk)
-            {
-                discounts = [.. discountResult.ResultValue];
-            }
-
-            var basketWithDiscounts = _applyDiscountDomainService.ApplyDiscounts(basketItems, discounts).ToList();
-
-            return await _basketItemService.CreateAsync([.. basketWithDiscounts], cancellationToken);
         }
     }
 }
