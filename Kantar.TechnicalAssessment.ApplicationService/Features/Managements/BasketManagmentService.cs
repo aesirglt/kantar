@@ -69,7 +69,10 @@ namespace Kantar.TechnicalAssessment.ApplicationService.Features.Managements
 
             if (basketItems is { Count: 0 }) return BasketResult.NewOk(default!);
 
-            await _basketItemService.CreateAsync([.. basketItems], cancellationToken);
+            var createdResult = await _basketItemService.CreateAsync([.. basketItems], cancellationToken);
+
+            if (createdResult.IsError)
+                return createdResult;
 
             var basketItemsUpdated = (await _basketService.GetAsync(basket.Id, cancellationToken))
                 .ResultValue.BasketItems;

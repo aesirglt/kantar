@@ -68,6 +68,8 @@ namespace Kantar.TechnicalAssessment.Tests.Services
 
             _basketItemServiceMock.Setup(x => x.CreateAsync(It.IsAny<List<BasketItem>>(), cancellationToken))
                 .ReturnsAsync(FSharpResult<Unit, DomainError>.NewOk(default!));
+            _basketItemServiceMock.Setup(x => x.UpdateAsync(It.IsAny<List<BasketItem>>(), cancellationToken))
+                .ReturnsAsync(FSharpResult<Unit, DomainError>.NewOk(default!));
 
             _itemServiceMoc.Setup(Setup => Setup.GetAllAsync(It.IsAny<List<Guid>>(), cancellationToken))
                 .ReturnsAsync(FSharpResult<IQueryable<Item>, DomainError>.NewOk(new List<Item>
@@ -91,13 +93,14 @@ namespace Kantar.TechnicalAssessment.Tests.Services
                     CreatedAt = DateTime.UtcNow
                 }
             ];
-            List<Guid> itemIds = [itemId];
-
-            _discountServiceMock.Setup(x => x.GetByItemIdsAsync(itemIds, It.IsAny<CancellationToken>()))
+            _discountServiceMock.Setup(x => x.GetByItemIdsAsync(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(FSharpResult<IQueryable<Discount>, DomainError>.NewOk(discounts.AsQueryable()));
 
             _applyDiscountDomainService.Setup(x => x.ApplyDiscounts(basked.BasketItems, It.IsAny<List<Discount>>()))
                 .Returns((IEnumerable<BasketItem> basketItems, List<Discount> discounts) => basketItems);
+
+            _basketItemServiceMock.Setup(x => x.CreateAsync(basked.BasketItems, cancellationToken))
+                .ReturnsAsync(FSharpResult<Unit, DomainError>.NewOk(default!));
 
             _basketItemServiceMock.Setup(x => x.CreateAsync(basked.BasketItems, cancellationToken))
                 .ReturnsAsync(FSharpResult<Unit, DomainError>.NewOk(default!));
@@ -107,9 +110,10 @@ namespace Kantar.TechnicalAssessment.Tests.Services
 
             // Assert
             result.IsOk.Should().BeTrue();
-            _discountServiceMock.Verify(x => x.GetByItemIdsAsync(itemIds, It.IsAny<CancellationToken>()));
+            _discountServiceMock.Verify(x => x.GetByItemIdsAsync(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()));
             _discountServiceMock.VerifyNoOtherCalls();
-            _basketItemServiceMock.Verify(x => x.CreateAsync(basked.BasketItems, cancellationToken));
+            _basketItemServiceMock.Verify(x => x.CreateAsync(It.IsAny<List<BasketItem>>(), cancellationToken));
+            _basketItemServiceMock.Verify(x => x.UpdateAsync(It.IsAny<List<BasketItem>>(), cancellationToken));
             _basketItemServiceMock.VerifyNoOtherCalls();
             _applyDiscountDomainService.Verify(x => x.ApplyDiscounts(It.IsAny<List<BasketItem>>(), It.IsAny<List<Discount>>()));
             _applyDiscountDomainService.VerifyNoOtherCalls();
