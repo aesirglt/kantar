@@ -267,7 +267,7 @@ namespace Kantar.TechnicalAssessment.Tests.DomainServices
         public void ApplyDiscountsToBasket_ShouldApplyMultipleDiscountsCorrectly()
         {
             // Arrange
-            var itemId= Guid.NewGuid();
+            var itemId = Guid.NewGuid();
             IEnumerable<BasketItem> basketItems = [
                     new()
                     {
@@ -290,6 +290,117 @@ namespace Kantar.TechnicalAssessment.Tests.DomainServices
 
             // Verify
             result.Sum(x => x.Discounts).Should().Be(250m);
+        }
+        [Test]
+        public void ApplyDiscountsToBasket_ShouldHandleMultipleItemsWithMultipleDiscounts()
+        {
+            // Arrange
+            var item1Id = Guid.NewGuid();
+            var item2Id = Guid.NewGuid();
+
+            IEnumerable<BasketItem> basketItems = [
+                new() { ItemId = item1Id, Quantity = 3, UnitPrice = 100m },
+        new() { ItemId = item2Id, Quantity = 2, UnitPrice = 50m }
+            ];
+
+            List<Discount> discounts = [
+                new() { ItemId = item1Id, DiscountType = DiscountType.Percentage, Value = 10 },
+        new() { ItemId = item1Id, DiscountType = DiscountType.Fixed, Value = 5 },
+        new() { ItemId = item2Id, DiscountType = DiscountType.Percentage, Value = 20 }
+            ];
+
+            // Act
+            var result = _service.ApplyDiscounts(basketItems, discounts).ToList();
+
+            // Assert
+            result.Should().HaveCount(3); // 2 discounts for item1, 1 for item2
+            result.Where(x => x.ItemId == item1Id).Sum(x => x.Discounts).Should().Be(45m); // (100*3*0.1) + (5*3)
+            result.Where(x => x.ItemId == item2Id).Sum(x => x.Discounts).Should().Be(20m); // (50*2*0.2)
+        }
+
+        [Test]
+        public void ApplyDiscountsToBasket_ShouldHandleZeroQuantity()
+        {
+            // Arrange
+            var itemId = Guid.NewGuid();
+            IEnumerable<BasketItem> basketItems = [
+                new() { ItemId = itemId, Quantity = 0, UnitPrice = 100m }
+            ];
+            List<Discount> discounts = [
+                new() { ItemId = itemId, DiscountType = DiscountType.Percentage, Value = 10 }
+            ];
+
+            // Act
+            var result = _service.ApplyDiscounts(basketItems, discounts);
+
+            // Assert
+            result.Sum(x => x.Discounts).Should().Be(0m);
+        }
+
+        [Test]
+        public void ApplyDiscountsToBasket_ShouldHandleDecimalValues()
+        {
+            // Arrange
+            var itemId = Guid.NewGuid();
+            IEnumerable<BasketItem> basketItems = [
+                new() { ItemId = itemId, Quantity = 1, UnitPrice = 99.99m }
+            ];
+            List<Discount> discounts = [
+                new() { Name = "", ItemId = itemId, DiscountType = DiscountType.Percentage, Value = 12.5m }
+            ];
+
+            // Act
+            var result = _service.ApplyDiscounts(basketItems, discounts);
+
+            // Assert
+            result.Sum(x => x.Discounts).Should().Be(12.49875m); // 99.99 * 0.125
+        }
+
+        [Test]
+        public void ApplyDiscountsToBasket_ShouldIgnoreInvalidDiscountType()
+        {
+            // Arrange
+            var itemId = Guid.NewGuid();
+            IEnumerable<BasketItem> basketItems = [
+                new() { ItemId = itemId, Quantity = 2, UnitPrice = 100m }
+            ];
+            List<Discount> discounts = [
+                new() { Name = "", ItemId = itemId, DiscountType = (DiscountType)99, Value = 10 } // Invalid type
+            ];
+
+            // Act
+            var result = _service.ApplyDiscounts(basketItems, discounts);
+
+            // Assert
+            result.Sum(x => x.Discounts).Should().Be(0m);
+        }
+
+        [Test]
+        public void ApplyDiscountsToBasket_ShouldHandleConditionalDivisionWithZeroConditionalQuantity()
+        {
+            // Arrange
+            var itemId = Guid.NewGuid();
+            var conditionalItemId = Guid.NewGuid();
+            IEnumerable<BasketItem> basketItems = [
+                new() { ItemId = itemId, Quantity = 3, UnitPrice = 10m },
+                new() { ItemId = conditionalItemId, Quantity = 0, UnitPrice = 5m }
+            ];
+            List<Discount> discounts = [
+                new() {
+                    Name = "Conditional Division Discount",
+                    ItemId = itemId,
+                    DiscountType = DiscountType.ConditionalDivision,
+                    Value = 2,
+                    ItemConditionalId = conditionalItemId,
+                    ConditionalQuantity = 2
+                }
+            ];
+
+            // Act
+            var result = _service.ApplyDiscounts(basketItems, discounts);
+
+            // Assert
+            result.Sum(x => x.Discounts).Should().Be(0m);
         }
     }
 }

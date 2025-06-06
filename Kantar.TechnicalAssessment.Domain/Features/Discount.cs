@@ -4,7 +4,7 @@ namespace Kantar.TechnicalAssessment.Domain.Features
 {
     public record Discount : EntityBase<Discount>
     {
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public DiscountType DiscountType { get; set; }
         public decimal Value { get; set; }
