@@ -14,6 +14,7 @@ Additionally, I have published a NuGet package that I use professionally to faci
 # Kantar.TechnicalAssessment Web API
 
 Kantar.TechnicalAssessment is a simple basket shopping API built with C# minimal api. It allows basic operations for Baskets.
+that application includes swagger documentation, in-memory database, and basic error handling.
 
 ## 📝 API Usage Instructions
 ### ➕ Create an Basket
